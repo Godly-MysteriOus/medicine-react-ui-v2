@@ -24,21 +24,26 @@ async function getMapLayoutUserDataTypeDefaultByDataTypeId(dataTypeId:string){
         console.log(error);
     }
 }
-function filterColumnLayout(template:Array<string>,luField:any){
+function filterColumnLayout(template:Array<string>,luField:any,renderer:Record<string,any>){
     const finalGridLayout:Array<object> = [];
+    luField.data = luField.data.map((obj:Record<string,any>)=>{
+        const newObj = {
+            ...obj,
+            cellRenderer : (renderer && renderer[obj.field]) ?? undefined,
+        };
+        return newObj;
+        // return obj;
+    });
     template.forEach((field:string,idx:number)=>{
-        const obj = luField.data.filter((obj:any)=>obj.field==field);
-        let finalObj=obj[0];
-        if(finalObj.filter!=false){
-            finalObj.filter = finalObj.filter.replaceAll('\"',"");
-        }
-        if(obj.length>0){
-            finalGridLayout.push(finalObj);
+        const data:Array<object> = luField.data;
+        const obj = data.find((obj:any)=>obj.field==field);
+        if(obj!=undefined && Object.keys(obj).length!=0){
+            finalGridLayout.push(obj);
         }
     });
     return finalGridLayout;
 }
-async function createGridLayout(dataTypeId:string){
+async function createGridLayout(dataTypeId:string,renderer:Record<string,any>){
     try{
         const getUserLayout:any = await getMapLayoutUserDataTypeDefaultByDataTypeId(dataTypeId);
         const getLayout:any = await getMapLayoutDataTypeDefaultByDataTypeId(dataTypeId);
@@ -46,10 +51,10 @@ async function createGridLayout(dataTypeId:string){
         let finalGridLayout:Array<object> = [];
         if(getUserLayout.data.length==0){
             const defaultTemplate = getLayout.data[0].template.split(',');
-            finalGridLayout =  filterColumnLayout(defaultTemplate,getLuFieldsByDataTypeId);
+            finalGridLayout =  filterColumnLayout(defaultTemplate,getLuFieldsByDataTypeId,renderer);
         }else{
             const userTemplate = getUserLayout.data[0].template(',');
-            finalGridLayout = filterColumnLayout(userTemplate,getLuFieldsByDataTypeId);
+            finalGridLayout = filterColumnLayout(userTemplate,getLuFieldsByDataTypeId,renderer);
         }
         return finalGridLayout;
     }catch(err){
@@ -62,6 +67,7 @@ type SortObj = {
 }|undefined
 async function getGridData(contextVal:contextPath,endpoint:string,filterObj:Object,sortObj:SortObj){
     try{
+        console.log(filterObj,sortObj);
         let {response} = await makeAPICall({contextPath:contextVal,endpoint});
         response.data = response.data.map((item:any)=>{
             if(item.filter!=false){

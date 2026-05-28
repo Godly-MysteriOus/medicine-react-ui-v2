@@ -20,7 +20,8 @@ export interface GridProps {
   // Core Configuration
   defaultColDef?: any;
   columnTypes?: { [key: string]: any };
-
+  // renderer
+  cellRenderer? : Record<string,any>
   // Selection
   rowSelection?: RowSelectionOptions;
   // suppressRowClickSelection?: boolean;
@@ -136,6 +137,7 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
       autoSizeStrategy = undefined,
       getRowId = undefined,
       onGridSizeChanged = undefined,
+      cellRenderer = {}
     },
     ref
   ) => {
@@ -180,7 +182,7 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
       try{
         gridApiRef.current = event.api;
         setLoading(true);
-        const gridLayout = await createGridLayout(dataTypeId);
+        const gridLayout = await createGridLayout(dataTypeId,cellRenderer);
         setColumn(gridLayout);
         // will trigger API call to load data;
         await loadGridData(event.api);
@@ -281,6 +283,9 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
             rowHeight={rowHeight}
             headerHeight={headerHeight}
             loading={loading}
+            enableAdvancedFilter = {enableAdvancedFilter}
+            rowDragEntireRow = {enableRowDrag}
+            suppressRowHoverHighlight = {suppressRowHoverHighlight}
           />
         </div>
       </AgGridProvider>
