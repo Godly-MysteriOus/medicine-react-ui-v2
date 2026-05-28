@@ -21,9 +21,12 @@ function App() {
       return 'error';
     }
   };
-
+  const minWidthRenderer =  (prop:any)=>{
+    return `${prop.value} px`
+  }
   const renderers: Record<string, any> = {
     filter: filterColumnRenderer,
+    minWidth : minWidthRenderer
   };
 
   const fieldConfigMap: Record<string, Partial<ColDef> & { field: string }> = {
