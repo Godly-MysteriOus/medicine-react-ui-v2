@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState,useRef} from 'react';
+import React, { useCallback, useState, useRef } from 'react';
 import {useStyles} from './Grid.css';
 import { buttonUseStyles } from '../../../utils/CSS/button.styles';
 import { AgGridReact, AgGridProvider } from 'ag-grid-react';
-import { AllCommunityModule,type RowSelectionOptions } from 'ag-grid-community';
+import { AllCommunityModule,type ColDef, type RowSelectionOptions } from 'ag-grid-community';
 import type {GridApi,GridReadyEvent,FilterChangedEvent,SortChangedEvent,SelectionChangedEvent} from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import {createGridLayout, getGridData} from './api';
@@ -18,13 +18,14 @@ export interface GridProps {
   contextMap : contextPath,
   endpoint : string,
   buttonMap? : Array<React.ReactElement>
+  fieldConfigMap?: Record<string, Partial<ColDef> & { field: string }>;
   // Core Configuration
   defaultColDef?: any;
   columnTypes?: { [key: string]: any };
   // renderer
   cellRenderer? : Record<string,any>
   // Selection
-  rowSelection?: RowSelectionOptions;
+  rowSelection?: RowSelectionOptions | 'single' | 'multiple';
   // suppressRowClickSelection?: boolean;
   suppressCellFocus?: boolean;
 
@@ -94,6 +95,7 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
       contextMap = 'DEFAULT',
       endpoint = '',
       buttonMap = [],
+      fieldConfigMap = {},
       defaultColDef = {},
       columnTypes = {},
       rowSelection = {mode:'singleRow',checkboxes:true,enableClickSelection:false},
@@ -159,7 +161,7 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
     // method is use to make API call based on filter, sortObj and endpoint
     const loadGridData = useCallback(async(gridApi?:GridApi)=>{
       const api = gridApi || gridApiRef.current;
-      if(!api) return;
+      if(!api || !contextMap || !endpoint) return;
       try{
         setLoading(true);
         const filterModel = api.getFilterModel();
@@ -183,7 +185,7 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
       try{
         gridApiRef.current = event.api;
         setLoading(true);
-        const gridLayout = await createGridLayout(dataTypeId,cellRenderer);
+        const gridLayout = await createGridLayout(dataTypeId,cellRenderer,fieldConfigMap);
         setColumn(gridLayout);
         // will trigger API call to load data;
         await loadGridData(event.api);
@@ -192,7 +194,7 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
       }finally{
         setLoading(false);
       }
-    },[dataTypeId,layoutId]);
+    },[dataTypeId,layoutId,fieldConfigMap,loadGridData]);
 
 
     // executes when filter is changed
@@ -299,4 +301,3 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
 Grid.displayName = 'Grid';
 
 export default Grid;
-   
