@@ -9,6 +9,7 @@ import {createGridLayout, getGridData} from './api';
 import type { contextPath } from '../../../utils/makeAPICall/makeAPICall';
 import { Button } from '@mui/material';
 import { useSelectedRowStore } from './useGridStore';
+import './gridStyles.css';
 const modules = [AllCommunityModule];
 
 export interface GridProps {
@@ -222,73 +223,75 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
       await loadGridData();
     },[loadGridData]);
     return (
-      <AgGridProvider modules={modules}>
-        <div
-          className={`${themeClass} ${className}`}
-          style={{
-            width: '100%',
-            height: '100%',
-            ...style,
-          }}
-        >
-          <div className={classes.buttonContainer}>
-            <div className={classes.passedButton}>{buttonMap.map((item, idx) => React.cloneElement(item, { key: item.key ?? idx }))}</div>
-            <div className={classes.predefinedButton}>
-              <Button onClick={handleResetFilters} size='small' color='primary' variant='contained' style={buttonUseStyles.root} children={'Reset Filter(s)'}/>
-              <Button size='small' color='error' variant='contained' style={buttonUseStyles.root}>Save Layout</Button>
-            </div>
+      <div style={{width:'100%'}}>
+        <div className={classes.buttonContainer}>
+          <div className={classes.passedButton}>{buttonMap.map((item, idx) => React.cloneElement(item, { key: item.key ?? idx }))}</div>
+          <div className={classes.predefinedButton}>
+            <Button onClick={handleResetFilters} size='small' color='primary' variant='contained' style={buttonUseStyles.root} children={'Reset Filter(s)'}/>
+            <Button size='small' color='error' variant='contained' style={buttonUseStyles.root}>Save Layout</Button>
           </div>
-          <AgGridReact
-            ref={ref}
-            rowData={gridData}
-            columnDefs={column}
-            defaultColDef={defaultDefaultColDef}
-            columnTypes={columnTypes}
-            rowSelection={rowSelection}
-            // suppressRowClickSelection={suppressRowClickSelection}
-            suppressCellFocus={suppressCellFocus}
-            pagination={pagination}
-            paginationPageSize={paginationPageSize}
-            paginationPageSizeSelector={paginationPageSizeSelector}
-            masterDetail={masterDetail}
-            detailCellRenderer={detailCellRenderer}
-            groupDisplayType={groupDisplayType}
-            // suppressBrowserResizeObserver={suppressBrowserResizeObserver}
-            rowClassRules={rowClassRules}
-            getRowClass={getRowClass}
-            onGridReady={onGridReady}
-            onSelectionChanged={onSelectionChanged}
-            onRowClicked={onRowClicked}
-            onCellClicked={onCellClicked}
-            onSortChanged={onSortChanged}
-            onFilterChanged={onFilterChanged}
-            onRowDoubleClicked={onRowDoubleClicked}
-            onCellDoubleClicked={onCellDoubleClicked}
-            onPaginationChanged={onPaginationChanged}
-            animateRows={animateRows}
-            suppressPaginationPanel={suppressPaginationPanel}
-            suppressMultiSort={suppressMultiSort}
-            suppressMenuHide={suppressMenuHide}
-            singleClickEdit={singleClickEdit}
-            undoRedoCellEditing={undoRedoCellEditing}
-            undoRedoCellEditingLimit={undoRedoCellEditingLimit}
-            suppressClipboardPaste={suppressClipboardPaste}
-            suppressFieldDotNotation={suppressFieldDotNotation}
-            cellSelection={cellSelection}
-            enableCharts={enableCharts}
-            pivotMode={pivotMode}
-            autoSizeStrategy={autoSizeStrategy}
-            getRowId={getRowId}
-            onGridSizeChanged={onGridSizeChanged}
-            rowHeight={rowHeight}
-            headerHeight={headerHeight}
-            loading={loading}
-            enableAdvancedFilter = {enableAdvancedFilter}
-            rowDragEntireRow = {enableRowDrag}
-            suppressRowHoverHighlight = {suppressRowHoverHighlight}
-          />
+        </div>
+        <AgGridProvider modules={modules}>
+          <div
+            className={`${themeClass} ${className} custom-grid-style`}
+            style={{
+              width: '100%',
+              height: '100%',
+              ...style,
+            }}
+          >
+            <AgGridReact
+              ref={ref}
+              rowData={gridData}
+              columnDefs={column}
+              defaultColDef={defaultDefaultColDef}
+              columnTypes={columnTypes}
+              rowSelection={rowSelection}
+              // suppressRowClickSelection={suppressRowClickSelection}
+              suppressCellFocus={suppressCellFocus}
+              pagination={pagination}
+              paginationPageSize={paginationPageSize}
+              paginationPageSizeSelector={paginationPageSizeSelector}
+              masterDetail={masterDetail}
+              detailCellRenderer={detailCellRenderer}
+              groupDisplayType={groupDisplayType}
+              // suppressBrowserResizeObserver={suppressBrowserResizeObserver}
+              rowClassRules={rowClassRules}
+              getRowClass={getRowClass}
+              onGridReady={onGridReady}
+              onSelectionChanged={onSelectionChanged}
+              onRowClicked={onRowClicked}
+              onCellClicked={onCellClicked}
+              onSortChanged={onSortChanged}
+              onFilterChanged={onFilterChanged}
+              onRowDoubleClicked={onRowDoubleClicked}
+              onCellDoubleClicked={onCellDoubleClicked}
+              onPaginationChanged={onPaginationChanged}
+              animateRows={animateRows}
+              suppressPaginationPanel={suppressPaginationPanel}
+              suppressMultiSort={suppressMultiSort}
+              suppressMenuHide={suppressMenuHide}
+              singleClickEdit={singleClickEdit}
+              undoRedoCellEditing={undoRedoCellEditing}
+              undoRedoCellEditingLimit={undoRedoCellEditingLimit}
+              suppressClipboardPaste={suppressClipboardPaste}
+              suppressFieldDotNotation={suppressFieldDotNotation}
+              cellSelection={cellSelection}
+              enableCharts={enableCharts}
+              pivotMode={pivotMode}
+              autoSizeStrategy={autoSizeStrategy}
+              getRowId={getRowId}
+              onGridSizeChanged={onGridSizeChanged}
+              rowHeight={rowHeight}
+              headerHeight={headerHeight}
+              loading={loading}
+              enableAdvancedFilter = {enableAdvancedFilter}
+              rowDragEntireRow = {enableRowDrag}
+              suppressRowHoverHighlight = {suppressRowHoverHighlight}
+            />
         </div>
       </AgGridProvider>
+      </div>
     );
   }
 );

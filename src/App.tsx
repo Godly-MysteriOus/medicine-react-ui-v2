@@ -4,13 +4,11 @@ import { Button } from '@mui/material';
 import { buttonUseStyles } from './utils/CSS/button.styles';
 import { useSelectedRowStore } from './components/atomic-components/AGGrid/useGridStore';
 function App() {
-  console.log(import.meta.env.VITE_SERVER_URL);
   const selectedRow = useSelectedRowStore(state=>state.selectedRows);
-  console.log(...selectedRow);
   const buttonMap:Array<React.ReactElement> = [];
   buttonMap.push(<Button size='small' color='primary' variant='outlined' style={buttonUseStyles.root} children={'New'}/>)
-  buttonMap.push(<Button size='small' color='primary' variant='outlined' style={buttonUseStyles.root} children={'Edit'}/>)
-  buttonMap.push(<Button size='small' color='primary' variant='outlined' style={buttonUseStyles.root} children={'Delete'}/>);
+  buttonMap.push(<Button disabled={selectedRow.length==1 ? false : true} size='small' color='secondary' variant='outlined' style={buttonUseStyles.root} children={'Edit'}/>)
+  buttonMap.push(<Button disabled={selectedRow.length==1 ? false : true} size='small' color='error' variant='outlined' style={buttonUseStyles.root} children={'Delete'}/>);
 
   const filterColumnRenderer = (prop:any)=>{
     if(typeof(prop.value)==='boolean'){
@@ -34,6 +32,9 @@ function App() {
           buttonMap={buttonMap} 
           rowSelection={{mode:'multiRow',checkboxes:true,enableClickSelection:false}}
           cellRenderer={renderers}
+          style={{
+            color:'darkgray'
+          }}
         />
       </div>
     </>
