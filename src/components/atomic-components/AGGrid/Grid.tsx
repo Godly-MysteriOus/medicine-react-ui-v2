@@ -3,7 +3,7 @@ import {useStyles} from './Grid.css';
 import { buttonUseStyles } from '../../../utils/CSS/button.styles';
 import { AgGridReact, AgGridProvider } from 'ag-grid-react';
 import { AllCommunityModule,type ColDef, type RowSelectionOptions } from 'ag-grid-community';
-import type {GridApi,GridReadyEvent,FilterChangedEvent,SortChangedEvent,SelectionChangedEvent} from 'ag-grid-community';
+import type {GridApi,GridReadyEvent,FilterChangedEvent,SortChangedEvent,SelectionChangedEvent, PaginationChangedEvent} from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import {createGridLayout, getGridData} from './api';
 import type { contextPath } from '../../../utils/makeAPICall/makeAPICall';
@@ -210,9 +210,12 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
     ,[loadGridData]);
 
     // on PaginationChange executes when paginationChanges
-    const onPaginationChanged = useCallback(()=>{
-      loadGridData();
-    },[gridApiRef.current?.paginationGetPageSize(),gridApiRef.current?.paginationGetCurrentPage()]);
+    const onPaginationChanged = useCallback((event: PaginationChangedEvent) => {
+      // Prevent infinite loop: Only reload if the user navigated to a new page or changed page size.
+      if (event.newPage || event.newPageSize) {
+        loadGridData();
+      }
+    }, []);
     // executes when selection is changed
     const onSelectionChanged = (event:SelectionChangedEvent)=>{
       const selectedRow  = event.api.getSelectedRows();
