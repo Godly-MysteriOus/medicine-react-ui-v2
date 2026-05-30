@@ -1,9 +1,9 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useMemo, useEffect } from 'react';
 import {useStyles} from './Grid.css';
 import { buttonUseStyles } from '../../../utils/CSS/button.styles';
 import { AgGridReact, AgGridProvider } from 'ag-grid-react';
 import { AllCommunityModule,type ColDef, type RowSelectionOptions } from 'ag-grid-community';
-import type {GridApi,GridReadyEvent,FilterChangedEvent,SortChangedEvent,SelectionChangedEvent, PaginationChangedEvent} from 'ag-grid-community';
+import type {GridApi,GridReadyEvent,SelectionChangedEvent, PaginationChangedEvent} from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import {createGridLayout, getGridData} from './api';
 import type { contextPath } from '../../../utils/makeAPICall/makeAPICall';
@@ -27,6 +27,7 @@ export interface GridProps {
   // Selection
   rowSelection?: RowSelectionOptions | 'single' | 'multiple';
   // suppressRowClickSelection?: boolean;
+  rowModelType?: 'clientSide' | 'infinite' | 'serverSide';
   suppressCellFocus?: boolean;
 
   // Pagination
@@ -97,6 +98,7 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
       fieldConfigMap = {},
       defaultColDef = {},
       columnTypes = {},
+      rowModelType = 'infinite',
       rowSelection = {mode:'singleRow',checkboxes:true,enableClickSelection:false},
       // suppressRowClickSelection = false,
       suppressCellFocus = false,
@@ -152,30 +154,54 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
     };
     const [loading,setLoading] = useState(false);
     const [column,setColumn] = useState<Array<Object>|undefined>([]);
-    const [gridData,setGridData] = useState<Array<Object>|undefined>([]);
     const gridApiRef = useRef<GridApi|null>(null);
+    const [currentPageSize, setCurrentPageSize] = useState(paginationPageSize);
     const setSelectedRows = useSelectedRowStore((state)=>state.setSelectedRows);
-    // method is use to make API call based on filter, sortObj and endpoint
-    const loadGridData = useCallback(async(gridApi?:GridApi)=>{
-      const api = gridApi || gridApiRef.current;
-      if(!api || !contextMap || !endpoint) return;
-      try{
-        setLoading(true);
-        const filterModel = api.getFilterModel();
-        const sortedCol = api.getColumnState().find((col)=>col.sort!=null);
-        const sortObj = sortedCol ? {colId:sortedCol.colId,sort:sortedCol.sort} : undefined;
-        const {data,totalRecords}:{data:Array<any>,totalRecords:number} = await getGridData(dataTypeId,contextMap,endpoint,filterModel||{},sortObj,api.paginationGetPageSize(),api.paginationGetCurrentPage());
-        if(data){
-          setGridData(data);
-        }
-      }catch(err){
-        console.log('Error loading grid data : ',err);
-        setGridData([]);
-      }finally{
-        setLoading(false);
-      }
-    },[contextMap,endpoint]);
 
+    // Sync internal state if prop changes from parent
+    useEffect(() => {
+      setCurrentPageSize(paginationPageSize);
+    }, [paginationPageSize]);
+
+    // Define the datasource for Infinite Row Model
+    const dataSource = useMemo(() => ({
+      getRows: async (params: any) => {
+        const api = gridApiRef.current;
+        if (!contextMap || !endpoint || !api) {
+          params.successCallback([], 0);
+          return;
+        }
+
+        // GUARD: Detect stale calls during Page Size changes.
+        // If the block range requested by the grid doesn't match the current pagination size,
+        // it means the grid is fetching a "stale" block before the configuration update finished.
+        const requestedBlockSize = params.endRow - params.startRow;
+        const actualPageSize = api.paginationGetPageSize();
+        
+        if (requestedBlockSize !== actualPageSize) {
+          params.successCallback([], 0);
+          return;
+        }
+
+        try {
+          setLoading(true);
+          const pageSize:number = params.endRow - params.startRow;
+          const pageIndex:number = Math.floor(params.startRow / pageSize);
+          // Map AG Grid sort model to your API sort object
+          const sortObj = params.sortModel && params.sortModel.length > 0 ? params.sortModel[0] : undefined;
+
+          const { data, totalRecords }: { data: Array<any>, totalRecords: number } = 
+            await getGridData(dataTypeId, contextMap, endpoint, params.filterModel || {}, sortObj, pageSize, pageIndex);
+          
+          params.successCallback(data || [], totalRecords || 0);
+        } catch (err) {
+          console.error('Error loading grid data:', err);
+          params.failCallback();
+        } finally {
+          setLoading(false);
+        }
+      }
+    }), [dataTypeId, contextMap, endpoint]);
 
     // initial state when grid is initialized
     const onGridReady = useCallback(async (event:GridReadyEvent)=>{
@@ -184,50 +210,34 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
         setLoading(true);
         const gridLayout = await createGridLayout(dataTypeId,cellRenderer,fieldConfigMap);
         setColumn(gridLayout);
-        // will trigger API call to load data;
-        await loadGridData(event.api);
       }catch(err){
         console.log('Error initializing grid : ',err);
       }finally{
         setLoading(false);
       }
-    },[dataTypeId,layoutId,fieldConfigMap,loadGridData]);
+    },[dataTypeId, fieldConfigMap, cellRenderer]);
 
-
-    // executes when filter is changed
-    const onFilterChanged = useCallback(
-      async(_event:FilterChangedEvent)=>{
-        await loadGridData();
-      }
-    ,[loadGridData]);
-
-
-    // executes when sort is applied
-    const onSortChanged = useCallback(
-      async(_event:SortChangedEvent)=>{
-        await loadGridData();
-      }
-    ,[loadGridData]);
-
-    // on PaginationChange executes when paginationChanges
-    const onPaginationChanged = useCallback((event: PaginationChangedEvent) => {
-      // Prevent infinite loop: Only reload if the user navigated to a new page or changed page size.
-      if (event.newPage || event.newPageSize) {
-        loadGridData();
-      }
-    }, []);
     // executes when selection is changed
     const onSelectionChanged = (event:SelectionChangedEvent)=>{
       const selectedRow  = event.api.getSelectedRows();
       setSelectedRows(selectedRow);
     }
 
-    const handleResetFilters = useCallback(async()=>{
+    // Detect when the user changes the page size in the UI
+    const onPaginationChanged = useCallback((event: PaginationChangedEvent) => {
+      if (event.newPageSize) {
+        // Just update state. The declarative prop update on AgGridReact 
+        // will handle the single, correct cache reset.
+        setCurrentPageSize(event.api.paginationGetPageSize());
+      }
+    }, []);
+
+    const handleResetFilters = useCallback(()=>{
       const api = gridApiRef.current;
       if(!api) return;
       api.setFilterModel(null);
-      await loadGridData();
-    },[loadGridData]);
+    },[]);
+
     return (
       <div style={{width:'100%'}}>
         <div className={classes.buttonContainer}>
@@ -248,15 +258,17 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
           >
             <AgGridReact
               ref={ref}
-              rowData={gridData}
               columnDefs={column}
               defaultColDef={defaultDefaultColDef}
               columnTypes={columnTypes}
+              rowModelType={rowModelType}
+              datasource={rowModelType === 'infinite' ? dataSource : undefined}
               rowSelection={rowSelection}
-              // suppressRowClickSelection={suppressRowClickSelection}
+              cacheBlockSize={currentPageSize}
+              maxBlocksInCache={1}
               suppressCellFocus={suppressCellFocus}
               pagination={pagination}
-              paginationPageSize={paginationPageSize}
+              paginationPageSize={currentPageSize}
               paginationPageSizeSelector={paginationPageSizeSelector}
               masterDetail={masterDetail}
               detailCellRenderer={detailCellRenderer}
@@ -267,12 +279,10 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
               onGridReady={onGridReady}
               onSelectionChanged={onSelectionChanged}
               onRowClicked={onRowClicked}
+              onPaginationChanged={onPaginationChanged}
               onCellClicked={onCellClicked}
-              onSortChanged={onSortChanged}
-              onFilterChanged={onFilterChanged}
               onRowDoubleClicked={onRowDoubleClicked}
               onCellDoubleClicked={onCellDoubleClicked}
-              onPaginationChanged={onPaginationChanged}
               animateRows={animateRows}
               suppressPaginationPanel={suppressPaginationPanel}
               suppressMultiSort={suppressMultiSort}

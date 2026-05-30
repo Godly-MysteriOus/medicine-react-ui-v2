@@ -96,9 +96,9 @@ type SortObj = {
     sort: SortDirection | undefined
 } | undefined
 
-async function getGridData(dataTypeId:string,contextVal: contextPath, endpoint: string, filterObj: Object, sortObj: SortObj,recordsToFetch:Number,recordToSkip:Number) {
+async function getGridData(dataTypeId:string,contextVal: contextPath, endpoint: string, filterObj: Object, sortObj: SortObj,recordsToFetch:number,recordToSkip:number) {
     try {
-        console.log(filterObj, sortObj);
+        recordToSkip = recordToSkip*recordsToFetch;
         let { response } = await makeAPICall({ contextPath: contextVal, endpoint,bodyContent:{dataTypeId,filterObj,sortObj,recordsToFetch,recordToSkip}, method:'POST' });
         response.data = response.data.map((item: any) => {
             return item;
