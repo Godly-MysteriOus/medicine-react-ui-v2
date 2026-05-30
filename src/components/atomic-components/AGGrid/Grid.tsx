@@ -60,7 +60,6 @@ export interface GridProps {
   onCellClicked?: (event: any) => void;
   onRowDoubleClicked?: (event: any) => void;
   onCellDoubleClicked?: (event: any) => void;
-  onPaginationChanged?: (event: any) => void;
 
   // Advanced
   animateRows?: boolean;
@@ -121,7 +120,6 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
       onCellClicked = undefined,
       onRowDoubleClicked = undefined,
       onCellDoubleClicked = undefined,
-      onPaginationChanged = undefined,
       animateRows = true,
       suppressPaginationPanel = false,
       suppressMultiSort = false,
@@ -157,7 +155,6 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
     const [gridData,setGridData] = useState<Array<Object>|undefined>([]);
     const gridApiRef = useRef<GridApi|null>(null);
     const setSelectedRows = useSelectedRowStore((state)=>state.setSelectedRows);
-
     // method is use to make API call based on filter, sortObj and endpoint
     const loadGridData = useCallback(async(gridApi?:GridApi)=>{
       const api = gridApi || gridApiRef.current;
@@ -167,7 +164,7 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
         const filterModel = api.getFilterModel();
         const sortedCol = api.getColumnState().find((col)=>col.sort!=null);
         const sortObj = sortedCol ? {colId:sortedCol.colId,sort:sortedCol.sort} : undefined;
-        const data:Array<any> = await getGridData(contextMap,endpoint,filterModel||{},sortObj);
+        const {data,totalRecords}:{data:Array<any>,totalRecords:number} = await getGridData(dataTypeId,contextMap,endpoint,filterModel||{},sortObj,api.paginationGetPageSize(),api.paginationGetCurrentPage());
         if(data){
           setGridData(data);
         }
@@ -212,6 +209,10 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
       }
     ,[loadGridData]);
 
+    // on PaginationChange executes when paginationChanges
+    const onPaginationChanged = useCallback(()=>{
+      loadGridData();
+    },[gridApiRef.current?.paginationGetPageSize(),gridApiRef.current?.paginationGetCurrentPage()]);
     // executes when selection is changed
     const onSelectionChanged = (event:SelectionChangedEvent)=>{
       const selectedRow  = event.api.getSelectedRows();
