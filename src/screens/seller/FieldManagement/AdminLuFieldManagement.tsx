@@ -36,7 +36,7 @@ export default function AdminLuFieldManagement(){
   const selectedRow = useSelectedRowStore(state => state.selectedRows);
   const buttonMap: Array<React.ReactElement> = [];
   buttonMap.push(<Button size='small' color='primary' variant='outlined' style={buttonUseStyles.root} children={'New'} />);
-  buttonMap.push(<Button disabled={selectedRow.length == 1 ? false : true} size='small' color='secondary' variant='outlined' style={buttonUseStyles.root} children={'Edit'} />);
+  buttonMap.push(<Button disabled={selectedRow.length == 1 ? false : true} size='small' color='warning' variant='outlined' style={buttonUseStyles.root} children={'Edit'} />);
   buttonMap.push(<Button disabled={selectedRow.length == 1 ? false : true} size='small' color='error' variant='outlined' style={buttonUseStyles.root} children={'Delete'} />);
 
   return (

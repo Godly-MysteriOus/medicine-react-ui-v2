@@ -98,15 +98,15 @@ export const makeAPICall = async ({
 
         // resolving Response
         switch (request.status) {
-            case 401:
-                // store.dispatch(authAction.logout());
-                redirectWindowCall(`login`);
-                break;
-            case 429 :
-            case 404 : 
-            case 500 : 
-                redirectWindowCall(`/error?${request.status}`);
-                break;
+            // case 401:
+            //     // store.dispatch(authAction.logout());
+            //     redirectWindowCall(`login`);
+            //     break;
+            // case 429 :
+            // case 404 : 
+            // case 500 : 
+            //     redirectWindowCall(`/error?${request.status}`);
+            // break;
             default:
                 const responseType = request.headers.get("content-type");
                 if(responseType?.includes("application/json")){
@@ -138,11 +138,11 @@ export const makeAPICall = async ({
 async function getCsrfToken() {
     const controller = new AbortController();
     const timeoutId = setTimeout(()=>{
-        console.log('Timingout API '+`${propertyConfig.SERVER_URL}common/csrf-token`);
+        console.log('Timingout API '+`${propertyConfig.SERVER_URL}csrf-token`);
         return controller.abort();
     },5000);
     try{
-        const req = await fetch(`${propertyConfig.SERVER_URL}common/csrf-token`,{
+        const req = await fetch(`${propertyConfig.SERVER_URL}csrf-token`,{
             headers:{
                 'Content-Type' : 'application/json',
             },

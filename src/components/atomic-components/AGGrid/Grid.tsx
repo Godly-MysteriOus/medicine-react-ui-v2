@@ -176,10 +176,10 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
               size="small"
               color="primary"
               variant="contained"
-              style={{...buttonUseStyles.root,background:'#94A3B8'}}
+              style={buttonUseStyles.root}
               children="Reset Filter(s)"
             />
-            <Button size="small" color="error" variant="contained" style={{...buttonUseStyles.root, background:'#0EA5E9'}}>
+            <Button size="small" color="saveLayout" variant="contained" style={buttonUseStyles.root}>
               Save Layout
             </Button>
           </div>
