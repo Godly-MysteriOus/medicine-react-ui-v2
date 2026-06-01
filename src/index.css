@@ -12,3 +12,27 @@
   min-height: 100svh;
   max-height: 100vh;
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* Background track that the scrollbar slides on */
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+
+/* The actual scrollable draggable handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 20px;
+  border: 2px solid transparent;
+  background-clip: content-box; /* Creates padding between thumb and edge */
+}
+
+/* Hover state for the handle */
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.45);
+  background-clip: content-box;
+}

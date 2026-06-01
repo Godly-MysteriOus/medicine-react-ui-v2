@@ -42,8 +42,8 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
       enableAdvancedFilter = false,
       enableRowDrag = false,
       suppressRowHoverHighlight = false,
-      rowHeight = 35,
-      headerHeight = 40,
+      rowHeight = 32,
+      headerHeight = 35,
       masterDetail = false,
       detailCellRenderer = undefined,
       groupDisplayType = 'singleColumn',
@@ -176,10 +176,10 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
               size="small"
               color="primary"
               variant="contained"
-              style={buttonUseStyles.root}
+              style={{...buttonUseStyles.root,background:'#94A3B8'}}
               children="Reset Filter(s)"
             />
-            <Button size="small" color="error" variant="contained" style={buttonUseStyles.root}>
+            <Button size="small" color="error" variant="contained" style={{...buttonUseStyles.root, background:'#0EA5E9'}}>
               Save Layout
             </Button>
           </div>
@@ -240,6 +240,7 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
               enableAdvancedFilter={enableAdvancedFilter}
               rowDragEntireRow={enableRowDrag}
               suppressRowHoverHighlight={suppressRowHoverHighlight}
+              domLayout='normal'
             />
         </div>
       </AgGridProvider>
