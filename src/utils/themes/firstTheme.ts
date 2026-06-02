@@ -1,12 +1,13 @@
-import { createTheme, darken } from '@mui/material/styles';
+import { createTheme, darken,lighten } from '@mui/material/styles';
+import fontFamilyList from '../CSS/fontMap';
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#7c3aed',
-      light: '#a78bfa',
-      dark: '#5b21b6',
-      contrastText: '#fff',
+      "main": "#0284C7",
+      "light": "#E0F2FE",
+      "dark": "#0369A1",
+      "contrastText": "#FFFFFF"
     },
     secondary: {
       main: '#0f172a',
@@ -21,27 +22,36 @@ const theme = createTheme({
       contrastText: '#fff',
     },
     info: {
-      main: '#0284c7',
-      light: '#38bdf8',
-      dark: '#0369a1',
-      contrastText: '#fff',
+      "main": "#2563EB",
+      "light": "#DBEAFE",
+      "dark": "#1D4ED8",
+      "contrastText": "#FFFFFF"
     },
     error: {
-      main: '#dc2626',
-      light: '#f87171',
-      dark: '#991b1b',
-      contrastText: '#fff',
+      "main": "#DC2626",
+      "light": "#FEE2E2",
+      "dark": "#B91C1C",
+      "contrastText": "#FFFFFF"
+    },
+    warning:{
+      "main": "#EA580C",
+      "light": "#FFEDD5",
+      "dark": "#C2410C",
+      "contrastText": "#FFFFFF"
     },
     action: {
       disabledBackground: '#e5e7eb',
       disabled: '#9ca3af',
       disabledOpacity: 0.5,
     },
-    saveLayout: {
-        main :'#0EA5E9',
-        light : '#0ea4e9d4',
-        dark : '#0ba8f0',
-        contrastText : 'white'
+    gridSaveLayout: {
+      main :'#0EA5E9',
+      light : '#0ea4e9d4',
+      dark : '#0ba8f0',
+      contrastText : 'white'
+    },
+    gridResetFilters:{
+
     }
   },
   components: {
@@ -51,6 +61,13 @@ const theme = createTheme({
           const colorKey = (ownerState.color || 'primary') as keyof typeof theme.palette;
           const paletteColor = theme.palette[colorKey] as any;
 
+          const baseStyles = {
+            fontSize: '10.5px',
+            fontFamily: fontFamilyList.noto,
+            textTransform: 'none' as const,
+            borderRadius: 5,
+          };
+          
           const disabledStyles = {
             opacity: theme.palette.action.disabledOpacity,
             color: theme.palette.action.disabled,
@@ -60,8 +77,7 @@ const theme = createTheme({
 
           if (ownerState.variant === 'contained') {
             return {
-              textTransform: 'none',
-              borderRadius: 5,
+              ...baseStyles,
               boxShadow: 'none',
               backgroundColor: paletteColor.main,
               color: paletteColor.contrastText,
@@ -75,13 +91,12 @@ const theme = createTheme({
 
           if (ownerState.variant === 'outlined') {
             return {
-              textTransform: 'none',
-              borderRadius: 5,
+              ...baseStyles,
               backgroundColor: paletteColor.light,
               color: paletteColor.main,
-              border: `1px solid ${paletteColor.main}`,
+              border: `1px solid ${lighten(paletteColor.main,0.3)}`,
               '&:hover': {
-                backgroundColor: darken(paletteColor.light, 0.12),
+                backgroundColor: lighten(paletteColor.light,0.15),
                 borderColor: paletteColor.dark,
               },
               '&.Mui-disabled': disabledStyles,
@@ -89,8 +104,7 @@ const theme = createTheme({
           }
 
           return {
-            textTransform: 'none',
-            borderRadius: 5,
+            ...baseStyles,
             backgroundColor: 'transparent',
             color: paletteColor.main,
             '&:hover': {

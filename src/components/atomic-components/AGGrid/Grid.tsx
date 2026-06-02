@@ -75,7 +75,7 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
     } = props;
 
     const classes = useStyles();
-    const setSelectedRows = useSelectedRowStore((state) => state.setSelectedRows);
+    const {setSelectedRows,setGridApi} = useSelectedRowStore((state) => state);
 
     // -- State & Refs --
     const [loading, setLoading] = useState(false);
@@ -144,6 +144,7 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
         console.error('Error initializing grid:', err);
       } finally {
         setLoading(false);
+        setGridApi(event.api);
       }
     }, [dataTypeId, fieldConfigMap, cellRenderer]);
 
@@ -174,12 +175,11 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
             <Button
               onClick={handleResetFilters}
               size="small"
-              color="primary"
+              color="error"
               variant="contained"
-              style={buttonUseStyles.root}
               children="Reset Filter(s)"
             />
-            <Button size="small" color="saveLayout" variant="contained" style={buttonUseStyles.root}>
+            <Button size="small" color="gridSaveLayout" variant="contained">
               Save Layout
             </Button>
           </div>

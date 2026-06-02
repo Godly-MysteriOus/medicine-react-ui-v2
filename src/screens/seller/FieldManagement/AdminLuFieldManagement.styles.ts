@@ -21,6 +21,18 @@ const useStyles = makeStyles(()=>({
         // border : '1px solid red', 
         overflow:'auto',
         padding:'1rem 0rem'
+    },
+    deleteModalHeaderStyle : {
+        fontSize:'1.1rem'
+    },  
+    deleteModalBodyContentFocus:{
+        fontWeight:'600'
+    },
+    deleteModalFooterContent:{
+        display:'flex',
+        justifyContent:'end',
+        gap:'1rem', 
+        padding : '0.5rem 1rem'
     }
 }),{name:'AdminLuFieldManagement',meta:'AdminLuFieldManagement'});
 

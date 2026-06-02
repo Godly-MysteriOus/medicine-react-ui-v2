@@ -1,10 +1,10 @@
 import Grid from "../../../components/atomic-components/AGGrid/Grid";
 import { Button } from "@mui/material";
-import { buttonUseStyles } from "../../../utils/CSS/button.styles";
 import { useStyles } from "./AdminLuFieldManagement.styles";
 import { useSelectedRowStore } from "../../../components/atomic-components/AGGrid/useGridStore";
 import type { ColDef } from 'ag-grid-community';
-
+import { useAdminLuFieldManagamentGridStore } from "./store";
+import DeleteLuFieldRecord from "./DeleteLuFieldRecord";
 const filterColumnRenderer = (prop: any) => {
   if (typeof prop.value === 'boolean') {
     return <span style={{ color: 'lightgray' }}>No Filter applied</span>;
@@ -29,24 +29,24 @@ const fieldConfigMap: Record<string, Partial<ColDef> & { field: string }> = {
     cellDataType: 'text',
   },
 };
-
-
 export default function AdminLuFieldManagement(){
   const classes = useStyles();
   const selectedRow = useSelectedRowStore(state => state.selectedRows);
+  const {openNewModal,openEditModal,openDeleteModal,setOpenNewModal,setOpenEditModal,setOpenDeleteModal} = useAdminLuFieldManagamentGridStore(state=>state);
   const buttonMap: Array<React.ReactElement> = [];
-  buttonMap.push(<Button size='small' color='primary' variant='outlined' style={buttonUseStyles.root} children={'New'} />);
-  buttonMap.push(<Button disabled={selectedRow.length == 1 ? false : true} size='small' color='warning' variant='outlined' style={buttonUseStyles.root} children={'Edit'} />);
-  buttonMap.push(<Button disabled={selectedRow.length == 1 ? false : true} size='small' color='error' variant='outlined' style={buttonUseStyles.root} children={'Delete'} />);
+  buttonMap.push(<Button size='small' color='primary' variant='outlined'  children={'New'} onClick={()=>setOpenNewModal(true)} />);
+  buttonMap.push(<Button disabled={selectedRow.length == 1 ? false : true} size='small' color='warning' variant='outlined'  children={'Edit'} onClick={()=>setOpenEditModal(true)} />);
+  buttonMap.push(<Button disabled={selectedRow.length == 1 ? false : true} size='small' color='error' variant='outlined'  children={'Delete'} onClick={()=>setOpenDeleteModal(true)}/>);
 
   return (
     <>
+      {openDeleteModal && <DeleteLuFieldRecord/>}
       <div className={classes.headerClass}>Lu Field Management Screen</div>
       <div className={classes.gridHolder}>
         <Grid
           dataTypeId={'6a13377f593cdd0677748058'}
           contextMap='ADMIN'
-          endpoint='lu-field'
+          endpoint='populate-lu-field'
           buttonMap={buttonMap}
           rowSelection={{ mode: 'multiRow', checkboxes: true, enableClickSelection: false }}
           cellRenderer={renderers}

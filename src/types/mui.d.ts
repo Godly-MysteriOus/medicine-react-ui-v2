@@ -3,16 +3,19 @@ import '@mui/material';
 
 declare module '@mui/material/styles' {
   interface Palette {
-    saveLayout: PaletteColor;
+    gridSaveLayout: PaletteColor;
+    gridResetFilters : PaletteColor;
   }
 
   interface PaletteOptions {
-    saveLayout?: PaletteColorOptions;
+    gridSaveLayout?: PaletteColorOptions;
+    gridResetFilters?: PaletteColorOptions;
   }
 }
 
 declare module '@mui/material' {
   interface ButtonPropsColorOverrides {
-    saveLayout: true;
+    gridSaveLayout: true;
+    gridResetFilters : true
   }
 }
