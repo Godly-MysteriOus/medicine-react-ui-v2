@@ -11,11 +11,6 @@
     "ignoreDeprecations": "6.0",
     "allowJs": true,
     "checkJs": false,
-    "paths": {
-      "@/*": ["src/*"],
-      "@assets" : ["src/assets/*"],
-      "@components/*": ["src/components/*"],
-    },
   },
   "include": ["src", "src/types/**/*.d.ts"]
 }

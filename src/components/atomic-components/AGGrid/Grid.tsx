@@ -14,7 +14,7 @@ import type {
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import { createGridLayout, getGridData } from './api';
 import { Button } from '@mui/material';
-import { useSelectedRowStore } from './useGridStore';
+import { useSelectedRowStore } from '@store/useGridStore';
 import './gridStyles.css';
 
 const modules = [AllCommunityModule];

@@ -22,7 +22,7 @@ const useStyles = makeStyles(()=>({
         overflow:'auto',
         padding:'1rem 0rem'
     },
-    deleteModalHeaderStyle : {
+    modalHeaderStyle : {
         fontSize:'1.1rem'
     },  
     deleteModalBodyContentFocus:{
@@ -33,6 +33,11 @@ const useStyles = makeStyles(()=>({
         justifyContent:'end',
         gap:'1rem', 
         padding : '0.5rem 1rem'
+    },
+    newOrEditModalFooterContent:{
+        display: 'flex',
+        justifyContent:'center',
+        gap : '1rem'
     }
 }),{name:'AdminLuFieldManagement',meta:'AdminLuFieldManagement'});
 
