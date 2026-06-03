@@ -14,7 +14,7 @@ import type {
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import { createGridLayout, getGridData } from './api';
 import { Button } from '@mui/material';
-import { useSelectedRowStore } from './useGridStore';
+import { useSelectedRowStore } from '@store/useGridStore';
 import './gridStyles.css';
 
 const modules = [AllCommunityModule];
@@ -42,8 +42,8 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
       enableAdvancedFilter = false,
       enableRowDrag = false,
       suppressRowHoverHighlight = false,
-      rowHeight = 35,
-      headerHeight = 40,
+      rowHeight = 32,
+      headerHeight = 35,
       masterDetail = false,
       detailCellRenderer = undefined,
       groupDisplayType = 'singleColumn',
@@ -75,7 +75,7 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
     } = props;
 
     const classes = useStyles();
-    const setSelectedRows = useSelectedRowStore((state) => state.setSelectedRows);
+    const {setSelectedRows,setGridApi} = useSelectedRowStore((state) => state);
 
     // -- State & Refs --
     const [loading, setLoading] = useState(false);
@@ -144,6 +144,7 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
         console.error('Error initializing grid:', err);
       } finally {
         setLoading(false);
+        setGridApi(event.api);
       }
     }, [dataTypeId, fieldConfigMap, cellRenderer]);
 
@@ -174,12 +175,11 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
             <Button
               onClick={handleResetFilters}
               size="small"
-              color="primary"
+              color="error"
               variant="contained"
-              style={buttonUseStyles.root}
               children="Reset Filter(s)"
             />
-            <Button size="small" color="error" variant="contained" style={buttonUseStyles.root}>
+            <Button size="small" color="gridSaveLayout" variant="contained">
               Save Layout
             </Button>
           </div>
@@ -240,6 +240,7 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
               enableAdvancedFilter={enableAdvancedFilter}
               rowDragEntireRow={enableRowDrag}
               suppressRowHoverHighlight={suppressRowHoverHighlight}
+              domLayout='normal'
             />
         </div>
       </AgGridProvider>
