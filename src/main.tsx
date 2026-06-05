@@ -2,12 +2,13 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { ThemeProvider } from '@mui/material/styles';
-import theme from './utils/themes/firstTheme.ts';
+import {CssVarsProvider} from '@mui/joy/styles';
+import joyTheme from '@utils/themes/joyTheme.ts';
+// import theme from './utils/themes/firstTheme.ts';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
+    <CssVarsProvider theme={joyTheme}>
       <App />
-    </ThemeProvider>
+    </CssVarsProvider>
   </StrictMode>,
 )

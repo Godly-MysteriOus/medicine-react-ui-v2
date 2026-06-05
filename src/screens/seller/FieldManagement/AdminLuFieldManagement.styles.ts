@@ -23,7 +23,7 @@ const useStyles = makeStyles(()=>({
         padding:'1rem 0rem'
     },
     modalHeaderStyle : {
-        fontSize:'1.1rem'
+        fontSize:'1.5rem'
     },  
     deleteModalBodyContentFocus:{
         fontWeight:'600'

@@ -2,7 +2,7 @@ import { useAdminLuFieldManagamentStore } from "@store/useAdminLuFieldManagement
 import {useSelectedRowStore} from "@store/useGridStore";
 import { Modal } from "@components/atomic-components/Modal/Modal";
 import { useCallback } from "react";
-import { Button } from "@mui/material";
+import { Button } from "@mui/joy";
 import { useStyles } from "./AdminLuFieldManagement.styles";
 import { makeAPICall } from "@utils/makeAPICall/makeAPICall";
 export default function DeleteLuFieldRecord(){
@@ -27,21 +27,22 @@ export default function DeleteLuFieldRecord(){
             handleModalClose();
         }
     },[selectedRows]);
-    const headerContent = <span className={classes.modalHeaderStyle}>Delete Lu Field Record</span>
+    const headerContent = <span>Delete Lu Field Record</span>
     const bodyContent = <span>You are about to delete the record with <span className={classes.deleteModalBodyContentFocus}>Field name : {selectedRows[0]?.field}</span> used for <span className={classes.deleteModalBodyContentFocus}>Screen name : {selectedRows[0]?.dataTypeId.shortname}</span>. Are you sure you want to proceed?</span>
     const footerContent = <span className={classes.deleteModalFooterContent}>
-        <Button size="small" color="error" variant="contained" onClick={handleSubmit} children="Yes, Delete"/>
-        <Button size="small" color="primary" variant="outlined" onClick={handleModalClose} children="No, Keep it"/>
+        <Button size="sm" color="danger" variant="solid" onClick={handleSubmit} children="Yes, Delete"/>
+        <Button size="sm" color="primary" variant="outlined" onClick={handleModalClose} children="No, Keep it"/>
     </span>
 
     return(
         <Modal  
             open={openDeleteModal} 
-            handleClose={handleModalClose}
+            onClose={handleModalClose}
             headerContent={headerContent}
             bodyContent={bodyContent}
             footerContent={footerContent}
-            size="medium"
+            size="md"
+            headerProps={{sx:{border:'2px solid magenta'}}}
         />
     )
 }

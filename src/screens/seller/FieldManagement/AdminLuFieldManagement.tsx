@@ -1,11 +1,11 @@
 import Grid from "@components/atomic-components/AGGrid/Grid";
-import { Button } from "@mui/material";
+import { Button } from "@mui/joy";
 import { useStyles } from "./AdminLuFieldManagement.styles";
 import { useSelectedRowStore } from "@store/useGridStore";
 import type { ColDef } from 'ag-grid-community';
 import { useAdminLuFieldManagamentStore } from "../../../store/useAdminLuFieldManagement";
 import DeleteLuFieldRecord from "./DeleteLuFieldRecord";
-import CreateNewOrEditLuField from "./CreateNewOrEditLuManagement";
+// import CreateNewOrEditLuField from "./CreateNewOrEditLuManagement";
 const filterColumnRenderer = (prop: any) => {
   if (typeof prop.value === 'boolean') {
     return <span style={{ color: 'lightgray' }}>No Filter applied</span>;
@@ -35,13 +35,13 @@ export default function AdminLuFieldManagement(){
   const selectedRow = useSelectedRowStore(state => state.selectedRows);
   const {openModal,openDeleteModal,setOpenModal,setOpenDeleteModal} = useAdminLuFieldManagamentStore(state=>state);
   const buttonMap: Array<React.ReactElement> = [];
-  buttonMap.push(<Button size='small' color='primary' variant='outlined'  children={'New'} onClick={()=>setOpenModal({open:true,operation:'open'})} />);
-  buttonMap.push(<Button disabled={selectedRow.length == 1 ? false : true} size='small' color='warning' variant='outlined'  children={'Edit'} onClick={()=>setOpenModal({open:true,operation:'edit'})} />);
-  buttonMap.push(<Button disabled={selectedRow.length == 1 ? false : true} size='small' color='error' variant='outlined'  children={'Delete'} onClick={()=>setOpenDeleteModal(true)}/>);
+  buttonMap.push(<Button size='sm' color='primary' variant='outlined'  children={'New'} onClick={()=>setOpenModal({open:true,operation:'open'})} />);
+  buttonMap.push(<Button disabled={selectedRow.length == 1 ? false : true} size='sm' color='primary' variant='outlined'  children={'Edit'} onClick={()=>setOpenModal({open:true,operation:'edit'})} />);
+  buttonMap.push(<Button disabled={selectedRow.length == 1 ? false : true} size='sm' color='danger' variant='soft'  children={'Delete'} onClick={()=>setOpenDeleteModal(true)}/>);
 
   return (
     <>
-      {openModal.open && <CreateNewOrEditLuField/>}
+      {/* {openModal.open && <CreateNewOrEditLuField/>} */}
       {openDeleteModal && <DeleteLuFieldRecord/>}
       <div className={classes.headerClass}>Lu Field Management Screen</div>
       <div className={classes.gridHolder}>

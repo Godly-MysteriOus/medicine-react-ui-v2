@@ -13,7 +13,7 @@ import type {
 } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
 import { createGridLayout, getGridData } from './api';
-import { Button } from '@mui/material';
+import { Button } from '@mui/joy';
 import { useSelectedRowStore } from '@store/useGridStore';
 import './gridStyles.css';
 
@@ -174,12 +174,12 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
           <div className={classes.predefinedButton}>
             <Button
               onClick={handleResetFilters}
-              size="small"
-              color="error"
-              variant="contained"
+              size="sm"
+              color="primary"
+              variant="solid"
               children="Reset Filter(s)"
             />
-            <Button size="small" color="gridSaveLayout" variant="contained">
+            <Button size="sm" color="danger" variant="solid">
               Save Layout
             </Button>
           </div>
