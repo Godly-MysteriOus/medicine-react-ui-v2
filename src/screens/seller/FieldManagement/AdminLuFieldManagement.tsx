@@ -5,22 +5,20 @@ import { useSelectedRowStore } from "@store/useGridStore";
 import type { ColDef } from 'ag-grid-community';
 import { useAdminLuFieldManagamentStore } from "../../../store/useAdminLuFieldManagement";
 import DeleteLuFieldRecord from "./DeleteLuFieldRecord";
+import { booleanRenderer } from "@utils/commonRendererUtils";
 // import CreateNewOrEditLuField from "./CreateNewOrEditLuManagement";
-const filterColumnRenderer = (prop: any) => {
-  if (typeof prop.value === 'boolean') {
-    return <span style={{ color: 'lightgray' }}>No Filter applied</span>;
-  } else if (typeof prop.value === 'string') {
-    return prop.value.replaceAll('"',"");
-  } else {
-    return 'error';
-  }
-};
+
 const minWidthRenderer =  (prop:any)=>{
   return `${prop.value} px`
 }
+
 const renderers: Record<string, any> = {
-  filter: filterColumnRenderer,
-  minWidth : minWidthRenderer
+  // filter: filterColumnRenderer,
+  minWidth : minWidthRenderer,
+  sortable : booleanRenderer,
+  resizable : booleanRenderer,
+  editable : booleanRenderer,
+  pinned : booleanRenderer
 };
 
 
@@ -28,7 +26,7 @@ const fieldConfigMap: Record<string, Partial<ColDef> & { field: string }> = {
   filter: {
     field: 'filter',
     cellDataType: 'text',
-  },
+  }
 };
 export default function AdminLuFieldManagement(){
   const classes = useStyles();

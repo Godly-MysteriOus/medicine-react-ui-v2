@@ -14,12 +14,10 @@ export const ContextMap: ContextPathMap = {
     DEFAULT: '',
     ADMIN: '/admin'
 }
-console.log(import.meta.env.VITE_SERVER_URL);
 const propertyConfig = {
     SERVER_URL : import.meta.env.VITE_SERVER_URL,
 }
 let csrfTokenCache:string = '';
-console.log(csrfTokenCache);
 const redirectWindowCall = (endpoint:string)=>{
     endpoint = endpoint.replaceAll("//",'/');
     endpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
@@ -152,7 +150,6 @@ async function getCsrfToken() {
             cache : 'no-cache',
         });
         const response = await req.json();
-        console.log(response.csrfToken);
         return response.csrfToken;
     }catch(err){
         console.log('Error while getting CSRF Token');

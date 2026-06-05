@@ -163,6 +163,7 @@ const Grid = React.forwardRef<AgGridReact, GridProps>(
 
     const handleResetFilters = useCallback(() => {
       gridApiRef.current?.setFilterModel(null);
+      gridApiRef.current?.applyColumnState({defaultState:{sort:null}})
     }, []);
 
     return (
