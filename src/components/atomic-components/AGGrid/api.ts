@@ -99,7 +99,7 @@ type SortObj = {
 async function getGridData(dataTypeId:string,contextVal: contextPath, endpoint: string, filterObj: Object, sortObj: SortObj,recordsToFetch:number,recordToSkip:number) {
     try {
         recordToSkip = recordToSkip*recordsToFetch;
-        let { response } = await makeAPICall({ contextPath: contextVal, endpoint,bodyContent:{dataTypeId,filterObj,sortObj,recordsToFetch,recordToSkip}, method:'POST',timeout:10000 });
+        let { response } = await makeAPICall({ contextPath: contextVal, endpoint,bodyContent:{dataTypeId,filterObj,sortObj,recordsToFetch,recordToSkip}, method:'POST',timeout:15000 });
         response.data = response.data.map((item: any) => {
             return item;
         });

@@ -91,6 +91,11 @@ function Modal({open,onClose,headerContent, headerProps,bodyContent,bodyProps,fo
             open={open}
             onClose={onClose}
             sx={{display:'flex',justifyContent:'center',alignItems:'center'}}
+            slotProps={{backdrop:{
+                sx:{
+                    backdropFilter : 'blur(3px)'
+                }
+            }}}
         >
             <Sheet
                 variant="outlined"
