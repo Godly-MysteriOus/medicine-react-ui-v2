@@ -2,7 +2,9 @@ import { Modal } from "@components/atomic-components/Modal/Modal";
 import { useSelectedRowStore } from "@store/useGridStore";
 import { useAdminLuFieldManagamentStore } from "@store/useAdminLuFieldManagement";
 import { Button } from "@mui/joy";
-import {useStyles} from './AdminLuFieldManagement.styles'
+import {useStyles,labelStyleLeft,componentStyleLeft,fieldStyleLeft,labelStyleRight,componentStyleRight,fieldStyleRight} from './AdminLuFieldManagement.styles';
+import { Field } from "@components/atomic-components/Field/Field";
+
 export default function CreateNewOrEditLuField(){
     const classes = useStyles();
     const {selectedRows,refreshGrid} = useSelectedRowStore(state=>state);
@@ -23,15 +25,87 @@ export default function CreateNewOrEditLuField(){
         <Button size="sm" color="danger" variant="outlined" onClick={handleClose} children="Cancel"/>
     </span>
     const headerContent = <span>{openModal.operation=='open' ? "Create New Lu Field" : "Edit Lu Field"}</span>
-    const bodyContent = openModal.operation=='open' ? <span>Form to create new Lu Field</span> : <span>Form to edit Lu Field with pre-filled data for <span className={classes.deleteModalBodyContentFocus}>Field name : {selectedRows[0]?.field}</span> used for <span className={classes.deleteModalBodyContentFocus}>Screen name : {selectedRows[0]?.dataTypeId.shortname}</span></span>
     return(
         <Modal
             open={openModal.open}
             onClose={handleClose}
             footerContent={footerContent}
             headerContent={headerContent}
-            bodyContent={bodyContent}
+            bodyContent={bodyContent()}
             size="md"
+            modal
         ></Modal>
     );
 };
+
+function bodyContent(){
+    return(
+        <div>
+            <Field inputLabel={'Field'} inputType="input"  error={true} errorText="pidi badmash hogyi"/>
+            <Field inputLabel={'Header Name'} inputType="input" error errorText="pidi maha badmosh"/>
+            <Field inputLabel={'Screen Name will be a dropdown'} inputType="input"/>
+            <Field inputLabel={'Min Width'} inputType="input" inputProps={{type:'number'}}/>
+            <Field inputLabel={'Flex (CSS Property)'} inputType="input" inputProps={{type:'number'}}/>
+            <Field inputLabel={'Column Type'} inputType="input"/>
+            <Field inputLabel={'Tooltip Text'} inputType="input"/>
+            <Field inputLabel={'Tooltip Component'} inputType="input"/>
+            <Field inputLabel={'Cell Datatype'} inputType="input"/>
+            <fieldset>
+            <legend>Field Configuration</legend>
+            <div style={{display:'flex', flex:'1',padding:'0.5rem 0'}}>
+                <Field 
+                    inputLabel={'Is Sorting Enabled'} 
+                    inputType="switch" 
+                    switchProp={{defaultChecked:true}} 
+                    labelStyle={labelStyleLeft}
+                    componentStyle={componentStyleLeft}
+                />
+                <Field 
+                    inputLabel={'Is Filter Enabled'} 
+                    inputType="switch" 
+                    switchProp={{defaultChecked:true}}
+                    labelStyle={labelStyleRight}
+                    componentStyle={componentStyleRight}
+                    fieldContainerStyle={fieldStyleRight}
+                />
+            </div>
+            <div style={{display:'flex', flex:'1',padding:'0.5rem 0'}}>
+                <Field 
+                    inputLabel={'Resizable'} 
+                    inputType="switch" 
+                    switchProp={{defaultChecked:true}}
+                    labelStyle={labelStyleLeft}
+                    componentStyle={componentStyleLeft}
+                />
+                    
+                <Field 
+                    inputLabel={'Editable'} 
+                    inputType="switch" 
+                    switchProp={{defaultChecked:true}}
+                    labelStyle={labelStyleRight}
+                    componentStyle={componentStyleRight}
+                    fieldContainerStyle={fieldStyleRight}
+                />
+            </div>
+            <div style={{display:'flex', flex:'1',padding:'0.5rem 0'}}>
+                <Field 
+                    inputLabel={'Is Pinned'} 
+                    inputType="switch" 
+                    switchProp={{defaultChecked:true}}
+                    labelStyle={labelStyleLeft}
+                    componentStyle={componentStyleLeft}
+                />
+                <Field 
+                    inputLabel={'Is Floating Filter Enabled'} 
+                    inputType="switch" 
+                    switchProp={{defaultChecked:true}}
+                    labelStyle={labelStyleRight}
+                    componentStyle={componentStyleRight}
+                    fieldContainerStyle={fieldStyleRight}
+                />
+            </div>
+            </fieldset>
+            
+        </div>
+    )
+}

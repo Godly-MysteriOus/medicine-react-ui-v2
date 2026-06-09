@@ -1,4 +1,4 @@
-import { makeStyles } from "@mui/styles";
+import { makeStyles, type CSSProperties } from "@mui/styles";
 import fontFamilyList from "../../../utils/CSS/fontMap";
 
 const useStyles = makeStyles(()=>({
@@ -42,3 +42,38 @@ const useStyles = makeStyles(()=>({
 }),{name:'AdminLuFieldManagement',meta:'AdminLuFieldManagement'});
 
 export {useStyles};
+
+export const labelStyleLeft:CSSProperties = {
+    width:'65%',
+    height:'100%',
+    padding:'0 0 '
+}
+export const componentStyleLeft:CSSProperties = {
+    width:'15%',
+    height:'100%',
+    display:'flex',
+    flexDirection:'row',
+    alignItems:'start'
+}
+export const fieldStyleLeft:CSSProperties = {
+
+};
+
+export const labelStyleRight:CSSProperties ={
+    width:'50%',
+    height:'100%',
+    padding:'0 0'
+}
+
+export const componentStyleRight:CSSProperties= {
+    width:'15%',
+    height:'100%',
+    display:'flex',
+    flexDirection:'row',
+    alignItems:'center'
+}
+export const fieldStyleRight:CSSProperties ={
+    justifyContent:'center',
+    gap:'1rem',
+    paddingRight:'1.5rem'
+}
