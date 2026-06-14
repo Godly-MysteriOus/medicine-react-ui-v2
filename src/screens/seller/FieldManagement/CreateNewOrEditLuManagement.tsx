@@ -2,19 +2,30 @@ import { Modal } from "@components/atomic-components/Modal/Modal";
 import { useSelectedRowStore } from "@store/useGridStore";
 import { useAdminLuFieldManagamentStore } from "@store/useAdminLuFieldManagement";
 import { Button } from "@mui/joy";
-// import {useStyles,labelStyleLeft,componentStyleLeft,fieldStyleLeft,labelStyleRight,componentStyleRight,fieldStyleRight} from './AdminLuFieldManagement.styles';
-// import { Field } from "@components/atomic-components/Field/Field";
 import { FieldV2 } from "@components/atomic-components/Field/FieldV2";
 import {useStyles} from './AdminLuFieldManagement.styles';
-import { IoIosMail } from "react-icons/io";
+import {datatypeDropdown} from './api';
+import { useEffect, useState } from "react";
+import useDropdownStore from "@store/useDropdownStore";
 export default function CreateNewOrEditLuField(){
     const classes = useStyles();
     const {selectedRows,refreshGrid} = useSelectedRowStore(state=>state);
     const {setOpenModal,openModal} = useAdminLuFieldManagamentStore(state=>state);
+    const fetchDropdown = useDropdownStore(state=>state.fetchData);
+    const [dropdownVal,setDropdownVal] = useState<Array<any>>([]);
+    useEffect(()=>{
+        const loadOptions = async()=>{
+            try{
+                const data= await fetchDropdown('lu-field','data-type',datatypeDropdown);
+                setDropdownVal(data);
+            }catch(err){
+                console.error("Failed to load roles", err);
+                setDropdownVal([]);
+            }
+        }
+        loadOptions();
+    },[fetchDropdown]);
     function handleSubmit(){
-        // API call to create or edit based on the operation type in openModal.operation
-        // if openModal.operation is 'open' then create else edit using selectedRows[0] data
-        // after successful API call, refresh the grid and close the modal
         console.log('API call to ',openModal.operation=='open' ? 'create' : 'edit',' the record with data : ',openModal.operation=='open' ? 'new data' : selectedRows[0]);
         refreshGrid();
         setOpenModal({open:false,operation:'open'});
@@ -33,93 +44,18 @@ export default function CreateNewOrEditLuField(){
             onClose={handleClose}
             footerContent={footerContent}
             headerContent={headerContent}
-            bodyContent={bodyContent()}
+            bodyContent={bodyContent(dropdownVal)}
             size="md"
         ></Modal>
     );
 };
 
-// function bodyContent(){
-//     return(
-//         <div>
-//             <Field inputLabel={'Field'} inputType="input"  error={true} errorText="pidi badmash hogyi"/>
-//             <Field inputLabel={'Header Name'} inputType="input" error errorText="pidi maha badmosh"/>
-//             <Field inputLabel={'Screen Name will be a dropdown'} inputType="input"/>
-//             <Field inputLabel={'Min Width'} inputType="input" inputProps={{type:'number'}}/>
-//             <Field inputLabel={'Flex (CSS Property)'} inputType="input" inputProps={{type:'number'}}/>
-//             <Field inputLabel={'Column Type'} inputType="input"/>
-//             <Field inputLabel={'Tooltip Text'} inputType="input"/>
-//             <Field inputLabel={'Tooltip Component'} inputType="input"/>
-//             <Field inputLabel={'Cell Datatype'} inputType="input"/>
-//             <fieldset>
-//             <legend>Field Configuration</legend>
-//             <div style={{display:'flex', flex:'1',padding:'0.5rem 0'}}>
-//                 <Field 
-//                     inputLabel={'Is Sorting Enabled'} 
-//                     inputType="switch" 
-//                     switchProp={{defaultChecked:true}} 
-//                     labelStyle={labelStyleLeft}
-//                     componentStyle={componentStyleLeft}
-//                 />
-//                 <Field 
-//                     inputLabel={'Is Filter Enabled'} 
-//                     inputType="switch" 
-//                     switchProp={{defaultChecked:true}}
-//                     labelStyle={labelStyleRight}
-//                     componentStyle={componentStyleRight}
-//                     fieldContainerStyle={fieldStyleRight}
-//                 />
-//             </div>
-//             <div style={{display:'flex', flex:'1',padding:'0.5rem 0'}}>
-//                 <Field 
-//                     inputLabel={'Resizable'} 
-//                     inputType="switch" 
-//                     switchProp={{defaultChecked:true}}
-//                     labelStyle={labelStyleLeft}
-//                     componentStyle={componentStyleLeft}
-//                 />
-                    
-//                 <Field 
-//                     inputLabel={'Editable'} 
-//                     inputType="switch" 
-//                     switchProp={{defaultChecked:true}}
-//                     labelStyle={labelStyleRight}
-//                     componentStyle={componentStyleRight}
-//                     fieldContainerStyle={fieldStyleRight}
-//                 />
-//             </div>
-//             <div style={{display:'flex', flex:'1',padding:'0.5rem 0'}}>
-//                 <Field 
-//                     inputLabel={'Is Pinned'} 
-//                     inputType="switch" 
-//                     switchProp={{defaultChecked:true}}
-//                     labelStyle={labelStyleLeft}
-//                     componentStyle={componentStyleLeft}
-//                 />
-//                 <Field 
-//                     inputLabel={'Is Floating Filter Enabled'} 
-//                     inputType="switch" 
-//                     switchProp={{defaultChecked:true}}
-//                     labelStyle={labelStyleRight}
-//                     componentStyle={componentStyleRight}
-//                     fieldContainerStyle={fieldStyleRight}
-//                 />
-//             </div>
-//             </fieldset>
-            
-//         </div>
-//     )
-// }
-function bodyContent(){
+function bodyContent(dropdownVal:any){
     return (
         <div>
             <FieldV2
                 label={"Field"}
                 required
-                error 
-                errorText="hihi khikhi"
-                showInfoIcon
-                infoDescription="damm daumm"
             />
             <FieldV2
                 label={"Header Name"}
@@ -130,7 +66,7 @@ function bodyContent(){
                 selectProps={{size:'sm'}}
                 required
                 inputType="select"
-                selectOptions={[{label:'Hihi',value:'a'},{label:'Hihi',value:'a'},{label:'Hihi',value:'a'},{label:'Hihi',value:'a'},{label:'Hihi',value:'a'},{label:'Hihi',value:'a'},{label:'Hihi',value:'a'}]}
+                selectOptions={dropdownVal}
             />
             <FieldV2
                 label={"Minimum Column Width"}
@@ -142,7 +78,6 @@ function bodyContent(){
             />
             <FieldV2
                 label={"Cell DataType"}
-                required
                 // error
                 inputType="select"
                 selectOptions={[{label:'TEXT',value:'text'},{label:'NUMBER',value:'number'},{label:'BOOLEAN',value:'boolean'},{label:'DATE',value:'date'},{label:'DATESTRING',value:'dateString'},{label:'OBJECT',value:'object'}]}
