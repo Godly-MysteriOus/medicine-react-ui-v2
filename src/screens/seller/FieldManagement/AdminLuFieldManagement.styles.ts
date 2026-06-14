@@ -18,9 +18,8 @@ const useStyles = makeStyles(()=>({
         minHeight: '80vh', 
         display: 'flex', 
         alignContent: 'flex-end', 
-        // border : '1px solid red', 
         overflow:'auto',
-        padding:'1rem 0rem'
+        padding:'0.5rem 0rem'
     },
     modalHeaderStyle : {
         fontSize:'1.5rem'

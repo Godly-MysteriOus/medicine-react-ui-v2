@@ -2,7 +2,6 @@ import Grid from "@components/atomic-components/AGGrid/Grid";
 import { Button } from "@mui/joy";
 import { useStyles } from "./AdminLuFieldManagement.styles";
 import { useSelectedRowStore } from "@store/useGridStore";
-import type { ColDef } from 'ag-grid-community';
 import { useAdminLuFieldManagamentStore } from "../../../store/useAdminLuFieldManagement";
 import DeleteLuFieldRecord from "./DeleteLuFieldRecord";
 import { booleanRenderer } from "@utils/commonRendererUtils";
@@ -18,15 +17,9 @@ const renderers: Record<string, any> = {
   sortable : booleanRenderer,
   resizable : booleanRenderer,
   editable : booleanRenderer,
-  pinned : booleanRenderer
-};
-
-
-const fieldConfigMap: Record<string, Partial<ColDef> & { field: string }> = {
-  filter: {
-    field: 'filter',
-    cellDataType: 'text',
-  }
+  pinned : booleanRenderer,
+  filter : booleanRenderer,
+  floatingFilter : booleanRenderer,
 };
 export default function AdminLuFieldManagement(){
   const classes = useStyles();
@@ -50,7 +43,7 @@ export default function AdminLuFieldManagement(){
           buttonMap={buttonMap}
           rowSelection={{ mode: 'multiRow', checkboxes: true, enableClickSelection: false }}
           cellRenderer={renderers}
-          fieldConfigMap={fieldConfigMap}
+          // fieldConfigMap={fieldConfigMap}
           style={{
             height : '69vh'
           }}

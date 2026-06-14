@@ -1,12 +1,12 @@
 .custom-grid-style .ag-cell{
     /* color : rgb(51, 51, 51); */
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     color: #334155;
 }
 .custom-grid-style .ag-header-cell{
     color : rgb(51, 51, 51);
-    font-size: 0.8rem;
-    font-weight: 650;
+    font-size: 0.75rem;
+    font-weight: 550;
     /* color: #E2E8F0; */
 }
 
@@ -17,4 +17,12 @@
 
 .custom-grid-style  .ag-picker-field-wrapper{
     min-height: 25px;
+}
+
+.ag-theme-quartz .ag-paging-panel {
+    height: 35px !important; /* Default is usually 44px+ */
+    min-height: 35px !important;
+    /* padding-top: 0 !important;
+    padding-bottom: 0 !important; */
+    font-size: 12px; /* Smaller text size */
 }
