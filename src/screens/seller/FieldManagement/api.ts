@@ -12,7 +12,6 @@ export const datatypeDropdown = async()=>{
                 arr.push(obj);
             });
         }
-        console.log(arr);
         return arr;
     }catch(err){
         console.log(err);

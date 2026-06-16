@@ -339,7 +339,6 @@ function FieldV2({
                 gap : "0.5rem",
                 ...fieldContainerStyle
             }
-            console.log(componentStyle);
             const inputContainerStyle : CSSProperties = displayType ==='horizontal' ? {...defaultComponentStyle,...componentStyle}
             :{
                 width:"90%",
@@ -352,12 +351,10 @@ function FieldV2({
         <FormControl {...formControlProps} sx={{width:"100%",...formControlProps?.sx}} >
             <div style={containerStyle}>
                 <FormLabel sx={{...formLabel,...labelStyle}} {...formLabelProps}>
-                    <div style={{fontSize:"0.675rem"}}>
-                        <span>{label}
-                        {required  && <span style={{color:"red",fontWeight:"bold", marginLeft:'0.25rem'}}>* </span> }
-                        </span>
-                    </div>
-                    
+                    <span style={{fontSize:"0.675rem",color:'#4a4a4a', display: 'inline-flex', alignItems: 'center'}}>
+                        <span>{label}</span>
+                        {required && <span style={{color:"red",fontWeight:"bold", marginLeft:'0.25rem'}}>*</span>}
+                    </span>
                 </FormLabel>
                 <Stack spacing={0} sx={inputContainerStyle}>
                     <div 

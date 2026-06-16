@@ -1,12 +1,13 @@
 import { create } from "zustand";
-type ModalState = {
+export type AdminLuFieldSuportedOperation = 'open' | 'edit';
+type AdminLuFieldManagementModalState = {
     open: boolean;
-    operation: 'open' | 'edit';
+    operation: AdminLuFieldSuportedOperation;
 };
 interface ModalStateStore{
-    openModal :ModalState
+    openModal :AdminLuFieldManagementModalState
     openDeleteModal : boolean;
-    setOpenModal : (val:ModalState)=>void;
+    setOpenModal : (val:AdminLuFieldManagementModalState)=>void;
     setOpenDeleteModal : (val:boolean)=>void;
 }
 

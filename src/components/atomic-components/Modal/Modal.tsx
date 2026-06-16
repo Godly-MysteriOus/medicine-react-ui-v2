@@ -54,7 +54,7 @@ function Modal({open,onClose,headerContent, headerProps={},bodyContent,bodyProps
                    {headerContent}
                    <IconButton onClick={onClose} size='sm'><CloseIcon fontSize='large' /></IconButton>
                 </Typography>
-                <Typography id="modal-desc" textColor="text.tertiary" level='body-sm' {...bodyProps}>
+                <Typography component="div" id="modal-desc" textColor="text.tertiary" level='body-sm' {...bodyProps}>
                     {bodyContent}
                 </Typography>
                 <Typography sx={{paddingTop:2}}>

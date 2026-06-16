@@ -32,7 +32,7 @@ export default function AdminLuFieldManagement(){
 
   return (
     <>
-      {openModal.open && <CreateNewOrEditLuField/>}
+      {openModal.open && <CreateNewOrEditLuField mode={openModal.operation} />}
       {openDeleteModal && <DeleteLuFieldRecord/>}
       <div className={classes.headerClass}>Lu Field Management Screen</div>
       <div className={classes.gridHolder}>
